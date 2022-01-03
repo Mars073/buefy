@@ -19,6 +19,8 @@
             <p><i>* This will not use the native <code>progress</code> element.</i></p>
         </Example>
 
+        <Example :component="ExCircular" title="Circular" :code="ExBarsCode" vertical/>
+
         <ApiView :data="api"/>
         <VariablesView :data="variables"/>
     </div>
@@ -49,6 +51,9 @@
     import ExBars from './examples/ExBars'
     import ExBarsCode from '!!raw-loader!./examples/ExBars'
 
+    import ExCircular from './examples/ExCircular'
+    import ExCircularCode from '!!raw-loader!./examples/ExCircular'
+
     export default {
         data() {
             return {
@@ -67,7 +72,9 @@
                 ExValuesCode,
                 ExSlotCode,
                 ExBars,
-                ExBarsCode
+                ExBarsCode,
+                ExCircular,
+                ExCircularCode
             }
         }
     }

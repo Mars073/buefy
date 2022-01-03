@@ -27,6 +27,62 @@
         margin-bottom: 1.5rem;
     }
 
+    &.is-circular,
+    &.is-not-native.is-circular {
+        background: none;
+        border-radius: 0;
+        aspect-ratio: 1 / 1;
+        height: auto;
+        position: relative;
+
+        .progress-arc {
+            fill: none;
+            stroke: $progress-bar-background-color;
+            stroke-width: 16;
+        }
+        &:not(.is-squared) {
+            .progress-arc {
+                stroke-linecap: round;
+            }
+            .progress-bar {
+                path {
+                    stroke-linecap: round;
+                }
+            }
+        }
+
+        .progress-bar {
+            path {
+                fill: none;
+                stroke: $progress-value-background-color;
+                stroke-width: 16;
+            }
+            text {
+                fill: findColorInvert($progress-value-background-color);
+                transform-origin: 50% 50%;
+            }
+
+            @each $name, $pair in $progress-colors {
+                $color: nth($pair, 1);
+                $color-invert: nth($pair, 2);
+                &.is-#{$name} {
+                    path {
+                        stroke: $color;
+                    }
+                    text {
+                        fill: $color-invert;
+                    }
+                }
+            }
+
+            text {
+                text-anchor: middle;
+                font-family: inherit;
+                font-size: .8rem;
+            }
+        }
+    }
+
     .progress-value {
         position: absolute;
         top: 0;
@@ -98,7 +154,7 @@
             }
         }
     }
-    
+
     &.is-squared {
         border-radius: 0;
     }

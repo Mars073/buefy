@@ -1,7 +1,15 @@
 <template>
-    <div class="progress-wrapper" :class="[wrapperClasses, { 'is-squared': !rounded }]">
+    <div
+        class="progress-wrapper"
+        :class="[wrapperClasses, { 'is-squared': !rounded, 'is-circular': circular }]">
+        <svg
+            v-if="circular"
+            :viewBox="`0 0 ${Math.ceil(2 * circleRadius)} ${Math.ceil(2 * circleRadius)}`">
+            <path :d="circlePath" class="progress-arc" />
+            <slot name="bar" />
+        </svg>
         <progress
-            v-if="isNative"
+            v-else-if="isNative"
             ref="progress"
             class="progress"
             :class="[newType, { 'is-squared': !rounded }]"
@@ -11,6 +19,16 @@
         <p
             v-if="isNative && showValue"
             class="progress-value"><slot>{{ newValue }}</slot></p>
+            <!-- <input
+            type="number"
+            v-model="circleStart"
+            aria-label="test"
+            style="position: absolute; top: 40%; left: 50%" >
+        <input
+            type="number"
+            v-model="circleEnd"
+            aria-label="test"
+            style="position: absolute; top: 50%; left: 50%" > -->
     </div>
 </template>
 
@@ -30,6 +48,22 @@ export default {
         rounded: {
             type: Boolean,
             default: true
+        },
+        circular: {
+            type: Boolean,
+            default: false
+        },
+        circleStart: {
+            type: Number,
+            default: 0
+        },
+        circleEnd: {
+            type: Number,
+            default: 359.99
+        },
+        circleRadius: {
+            type: Number,
+            default: 100
         },
         value: {
             type: Number,
@@ -92,6 +126,27 @@ export default {
                 'is-not-native': !this.isNative,
                 [this.size]: typeof this.size === 'string' && !this.isNative
             }
+        },
+        circlePath() {
+            const radius = Math.floor(this.circleRadius) - 8
+            const full = Math.abs(this.circleEnd - this.circleStart) >= 359
+            const start = this.polarToCartesian(
+                this.circleRadius, this.circleRadius,
+                radius,
+                full ? this.circleStart + 359.9 : this.circleEnd
+            )
+            const end = this.polarToCartesian(
+                this.circleRadius, this.circleRadius,
+                radius,
+                this.circleStart
+            )
+            const flag = Math.abs(this.circleEnd - this.circleStart) % 360 <= 180 ? 0 : 1
+
+            return [
+                'M', start.x, start.y,
+                'A', radius, radius, 0, flag, 0, end.x, end.y,
+                full ? 'z' : ''
+            ].join(' ')
         }
     },
     watch: {
@@ -137,6 +192,14 @@ export default {
                     maximumFractionDigits: maximumFractionDigits
                 }
             ).format(value)
+        },
+        polarToCartesian(cx, cy, r, deg) {
+            const rad = (deg - 90) * Math.PI / 180
+
+            return {
+                x: cx + (r * Math.cos(rad)),
+                y: cy + (r * Math.sin(rad))
+            }
         }
     }
 }
