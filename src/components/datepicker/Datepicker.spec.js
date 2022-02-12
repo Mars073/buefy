@@ -266,8 +266,9 @@ describe('BDatepicker', () => {
     describe('#dateFormatter', () => {
         it('should add one to month since month in dates starts from 0', () => {
             const dateToFormat = new Date(2019, 3, 1)
+            const localeDateFormated = dateToFormat.toLocaleDateString()
             const formattedDate = wrapper.vm.dateFormatter(dateToFormat, wrapper.vm)
-            expect(formattedDate).toEqual('2019-4-1')
+            expect(formattedDate).toEqual(localeDateFormated)
         })
 
         it('should format based on 2-digit numeric locale date with type === month', () => {
