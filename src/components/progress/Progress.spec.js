@@ -75,7 +75,10 @@ describe('BProgress', () => {
                     }
                 })
 
-                expect(wrapper.find('.progress').text()).toEqual(`${value}.00`)
+                expect(wrapper.find('.progress').text()).toEqual(Number(value).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }))
             })
         })
     })
